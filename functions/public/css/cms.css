@@ -1,0 +1,33 @@
+/* #menu nav{
+    color: #ffffff;
+} */
+
+
+body{
+    background-color: #ffda79;
+}
+
+#navtop{
+    background-color: #33d9b2;
+}
+
+#navbarNavDropdown{
+    margin-left: 800px;
+
+    
+}
+
+.navbar-nav > .nav-item{
+    /* padding-left: 30px; */
+}
+ #listnama{
+    text-align: left;
+    padding-left: 10px;
+    color: #2c2c54;
+} 
+
+/* .btn{
+    margin-left: 1000px;
+    background: #ffb142;
+    color: #2c2c54;
+} */
