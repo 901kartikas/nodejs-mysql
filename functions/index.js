@@ -56,7 +56,7 @@ app.use((req, res, next) => {
 
 
 app.get('/', (request, respond) => {
-    let sql = "SELECT * FROM  edit";
+    let sql = "SELECT * FROM  edit,gambar";
     let query = connection.query(sql, (err, results) => {
         if (err) throw err;
         var string = JSON.stringify(results);
@@ -76,7 +76,7 @@ app.post('/kirim', urlencodedParser, (req, res) => {
         if (err) throw err;
         var string = JSON.stringify(results);
         var signnum = JSON.parse(string);
-        res.render('index', {
+        res.redirect('index', {
             value: signnum
 
         });

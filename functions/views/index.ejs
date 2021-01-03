@@ -52,19 +52,23 @@
             <div class="content first-content">
               <div class="container-fluid">
                 <% value.forEach(function(entry) {%>
-                    <form action="/edit">
+                   
                   <div class="col-md-3">
-                            <div class="author-image"><img src="<%=entry.edit_gb%>" alt=""></div>
+                    
+                            <div class="author-image">   <img src="<%=entry.edit_gb%>" alt=""></div>
+                            
                      </div>
+                    
                   <div class="col-md-9">
                       <h2><%=entry.edit_nama%></h2>
                       <p> <%=entry.edit_desc%></p>
                       <div class="main-btn"><a href="#2">Cari Tahu lebih lanjut</a></div>
                       <div class="fb-btn"><a href="https://web.facebook.com/skhsf/?_rdc=1&_rdr" target="_blank">Fanpage</a></div>
                     </div>
+                
+                    <%});%>
                   </div>
-            </form>
-            <%});%>
+                  
             </div>
           </div>
           
