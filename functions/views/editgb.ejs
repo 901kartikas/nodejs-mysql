@@ -93,7 +93,7 @@
         </thead>
         <tbody>
           <% value.forEach(function(entry) {%>
-          <form  method="POST">
+          <form  method="POST" action="/testadd" enctype="multipart/form-data">
             <tr>
               <th scope="row"> <input type="text" name="id_gb" class="form-control" id="input1" value="<%=entry.id_gb%>" readonly></th>
               <td> 
@@ -103,13 +103,17 @@
             </td>
 
               <td >
-                <div class="form-group">
+                <div class="input-group mb-3">
+                  <input type="file" class="form-control" name="gambar">
+                  <label class="input-group-text" for="inputGroupFile02">Upload</label>
+                </div>
+                <!-- <div class="form-group">
                   <input type="text" name="link_gb" class="form-control" id="input1" value="<%=entry.link_gb%>">
                 </input>
-                   </div>
+                   </div> -->
               </td>
               <td class="from-group"><button type="submit" class="btn btn-primary" formaction="/updategb">update</button></td>
-              <td class="from-group"><button type="submit" class="btn btn-primary" formaction="/deletegb/<%=entry.id_gb%>?_method=DELETE">Delete</button></td>
+              <!-- <td class="from-group"><button type="submit" class="btn btn-primary" formaction="/deletegb/<%=entry.id_gb%>?_method=DELETE">Delete</button></td> -->
 
             </tr>
           </form>

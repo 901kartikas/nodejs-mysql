@@ -1,17 +1,14 @@
-const functions = require('firebase-functions');
 const path = require('path');
 const express = require('express');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
-const app = express();
-const server = require('http').createServer(app);
 const multer = require('multer');
+const app = require('express')();
+const mysql = require('mysql');
 const fs = require("fs");
+const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(bodyParser.json());
+// const session = require('express-session');
 
 var urlencodedParser = bodyParser.urlencoded({
     extended: false
@@ -24,14 +21,38 @@ var connection = mysql.createConnection({
     password: '',
     database: 'portofolio'
 });
- 
+
+const DIR = './public/uploads';
 connection.connect();
 global.db = connection;
 
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(bodyParser.json());
+var urlencodedParser = bodyParser.urlencoded({
+  extended: false
+})
+
 app.use("/", express.static('./public'));
+app.use((req, res, next) => {
+    res.io = io
+    next()
+  });
+   
+  const handleError = (err, res) => {
+    res
+      .status(500)
+      .contentType("text/plain")
+      .end("Oops! Something went wrong!");
+  };
+  
+  const upload = multer({
+    dest: "/path/to/temporary/directory/to/store/uploaded/files"
+  
+    // you might also want to set some limits: https://github.com/expressjs/multer#limits
+  });
 
-
-exports.app = functions.https.onRequest(app);
+// exports.app = functions.https.onRequest(app);
 
 
 app.get('/', (request, respond) => {
@@ -123,28 +144,40 @@ app.post('/update', urlencodedParser, (request, respond) => {
 
 
 // //nampilin data gambar
-// app.get('/editgb',(request, respond) => {
-//     let sql = "SELECT * FROM  gambar";
-//     let query = connection.query(sql, (err, results) => {
-//         if (err) throw err;
-//         var string = JSON.stringify(results);
-//         var signnum = JSON.parse(string);
-//         respond.render('editgb', {
-//             value: signnum
-//         })
-//     });
-// });
+app.get('/editgb',(request, respond) => {
+    let sql = "SELECT * FROM  gambar";
+    let query = connection.query(sql, (err, results) => {
+        if (err) throw err;
+        var string = JSON.stringify(results);
+        var signnum = JSON.parse(string);
+        respond.render('editgb', {
+            value: signnum
+        })
+    });
+});
 
-// app.post('/updategb', urlencodedParser, (request, respond) => {
-//     let sqltext = "UPDATE gambar SET nama_gb='" + request.body.nama_gb +
-//         "', link_gb='" + request.body.link_gb +
-//         "' WHERE id_gb=" + request.body.id_gb;
-//     console.log(sqltext);
-//     let query = connection.query(sqltext, (err, results) => {
-//         respond.redirect('editgb');
+var file = "file:///";
+app.post('/updategb', upload.single("gambar"), (request, respond) => {
+    const tempPath = request.file.path;
+    const targetPath = "D:\\\\GitHub\\\\nodejs-mysql\\\\functions\\\\public\\\\uploads\\\\" + request.file.originalname;
 
-//     });
-// });
+    fs.rename(tempPath, targetPath, err => {
+      //     if (err) return handleError(err, res);
+    });
+    
+    let sqltext = "UPDATE gambar SET nama_gb='" + request.body.nama_gb +
+        "', link_gb='" + targetPath +
+        "' WHERE id_gb=" + request.body.id_gb;
+    console.log(sqltext);
+    let query = connection.query(sqltext, (err, results) => {
+        respond.redirect('editgb');
+
+    });
+    }
+
+);
+
+
 
 app.post("/deletegb/:id_gb", urlencodedParser, (req, res) => {
     let sqltext = "DELETE FROM gambar WHERE id_gb = " + req.params.id_gb;
